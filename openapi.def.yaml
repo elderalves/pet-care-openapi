@@ -1,0 +1,252 @@
+openapi: 3.0.3
+info:
+  title: FarmStall API
+  version: v1
+  description: |
+    This is the FarmStall API, which allows you to manage reviews and users.
+    You can create, retrieve, and filter reviews, as well as create users and tokens.
+
+    ![Picture of produce](https://farmstall.designapis.com/img/produce-banner.jpg)
+
+    ---
+
+    # Auth
+
+    To create **Reviews** without being _anonymous_. You need to add a **MyUserToken** to the header of your request.
+
+    To get a **MyUserToken**:
+    1. Create a **User** by calling the [POST /users](#Users/post_users) with your **User** credentials.
+    2. Get a **MyUserToken** by calling the [POST /tokens](#Tokens/post_tokens) with your **User** credentials.
+
+    # Reviews
+
+    Reviews are the heart of this API. <br/>
+    Registered **Users** and anonymous users can both write reviews based on their experience at farm stalls.
+
+    Each review comes with a rating of between one and five stars inclusive.
+
+      - One star being the worst experience.
+      - Five stars being the best experience.
+
+    ### Example Reviews
+
+    "A wonderful time!" &mdash; Bob McNally <br/>
+    ![5 stars](https://farmstall.designapis.com/img/rating-5.png)
+
+    "A awful place" &mdash; _Anonymous_ <br/>
+    ![1 star](https://farmstall.designapis.com/img/rating-1.png)
+
+    "A totally average place" &mdash; Jane Fair <br/>
+    ![3 stars](https://farmstall.designapis.com/img/rating-3.png)
+
+  contact:
+    name: FarmStall Support
+    email: support@farmstall.designapis.com
+  license:
+    name: MIT License
+    url: https://opensource.org/license/mit/
+externalDocs:
+  description: Find out more about FarmStall
+  url: https://farmstall.designapis.com/docs
+servers:
+- url: https://farmstall.designapis.com/v1
+paths:
+  /reviews:
+    get:
+      description: Get a bunch of reviews.
+      tags: 
+        - Reviews
+      parameters:
+      - name: maxRating
+        description: Filter the reviews by the maximum rating
+        in: query
+        schema:
+          type: number
+      responses:
+        200:
+          description: A bunch of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    uuid:
+                      type: string
+                      pattern: '^[0-9a-fA-F\-]{36}$'
+                    message:
+                      type: string
+                    rating:
+                      type: integer
+                      minimum: 1
+                      maximum: 2
+                    userId:
+                      type: string
+                      pattern: '^[0-9a-fA-F\-]{36}$'
+                      nullable: true
+    post:
+      description: Create a new Review
+      tags: 
+        - Reviews
+      security:
+        - MyUserToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                message: A lovely experience.
+                rating: 5
+              properties:
+                message:
+                  type: string
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  example: 5
+      responses:
+        '201':
+          description: Successfully created a new review
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: An awesome time for the whole family.
+                  rating:
+                    type: integer
+                    minimum: 1
+                    maximum: 5
+                    example: 5
+                  userId:
+                    type: string
+                    pattern: '^[0-9a-fA-F\-]{36}$'
+                    nullable: true
+                    example: 123e4567-e89b-12d3-a456-426614174000
+                  uuid:
+                    type: string
+                    pattern: '^[0-9a-fA-F\-]{36}$'
+                    example: 123e4567-e89b-12d3-a456-426614174000
+  /reviews/{reviewId}:
+    get:
+      description: Get a single review by its ID.
+      tags: 
+        - Reviews
+      parameters:
+      - name: reviewId
+        in: path
+        required: true
+        description: The ID of the review to retrieve
+        schema:
+          type: string
+          minLength: 36
+          maxLength: 36
+          pattern: '^[a-zA-Z0-9-]+'
+      responses:
+        '200':
+          description: A single review
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: An awesome time for the whole family.
+                  rating:
+                    type: integer
+                    minimum: 1
+                    maximum: 5
+                    example: 5
+                  userId:
+                    minLength: 36
+                    maxLength: 36
+                    pattern: '^[a-zA-Z0-9-]+'
+                    nullable: true
+                    example: 123e4567-e89b-12d3-a456-426614174000
+                  uuid:
+                    minLength: 36
+                    maxLength: 36
+                    pattern: '^[a-zA-Z0-9-]+'
+                    example: 123e4567-e89b-12d3-a456-426614174000
+  /users:
+    post:
+      description: Create a new user
+      tags:
+        - Users
+      requestBody:
+        description: User details to create a new user
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: ponelat
+                password:
+                  type: string
+                  format: password
+                fullName:
+                  type: string
+                  example: Ponelat van der Merwe
+      responses:
+        '201':
+          description: Successfully created a new user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: ponelat
+                  uuid:
+                    type: string
+                    example: 123e4567-e89b-12d3-a456-426614174000
+  /tokens:
+    post: 
+      description: Create a new user token
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: ponelat
+                password:
+                  type: string
+                  format: password
+      responses:
+        '201':
+          description: Successfully created a new user token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: 123e4567-e89b-12d3-a456-426614174000
+tags:
+  - name: Reviews
+    description: |
+      Reviews of your favourite farm stalls.
+  - name: Users
+    description: |
+      You can create a user to get a **MyUserToken** to create reviews without being anonymous.
+components:
+  securitySchemes:
+    MyUserToken:
+      type: apiKey
+      in: header
+      name: Authorization
