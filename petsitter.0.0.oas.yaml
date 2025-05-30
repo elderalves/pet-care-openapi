@@ -2,11 +2,16 @@ openapi: 3.0.3
 info:
   title: Pet Sitter API
   version: "0.1"
+tags:
+  - name: Users
+    description: Operations related to users
+  - name: Jobs
+    description: Operations related to jobs
 paths:
   /users:
     post:
       summary: Create a new user
-      operationId: createUser
+      operationId: registerUser
       tags:
         - Users
       requestBody:
@@ -25,13 +30,13 @@ paths:
   /users/{id}:
     parameters:
       - schema:
-          type: integer
+          type: string
         name: id
         in: path
         required: true
     get:
       summary: Get user by ID
-      operationId: getUserById
+      operationId: viewUserWithId
       tags:
         - Users
       responses:
@@ -43,7 +48,7 @@ paths:
                 $ref: '#/components/schemas/User'
     put:
       summary: Update user by ID
-      operationId: updateUserById
+      operationId: modifyUserWithId
       tags:
         - Users
       requestBody:
@@ -61,7 +66,7 @@ paths:
                 $ref: '#/components/schemas/User'
     delete:
       summary: Delete user by ID
-      operationId: deleteUserById
+      operationId: deleteUserWithId
       tags:
         - Users
       responses:
@@ -70,15 +75,15 @@ paths:
   /users/{id}/jobs:
     parameters:
       - schema:
-          type: integer
+          type: string
         name: id
         in: path
         required: true
     get:
       summary: Get jobs created by user
-      operationId: getUserJobs
+      operationId: listJobsForUser
       tags:
-        - Jobs
+        - Users
       responses:
         '200':
           description: List of jobs created by user
@@ -97,12 +102,12 @@ paths:
         in: path
         required: true
         schema:
-          type: integer
+          type: string
     get:
       summary: Get job applications made by user
-      operationId: getUserJobApplications
+      operationId: listJobApplicationsForUser
       tags:
-        - Job Applications
+        - Users
       responses:
         '200':
           description: List of job applications made by user
@@ -201,7 +206,7 @@ paths:
                 type: string
     get:
       summary: Get all jobs
-      operationId: getAllJobs
+      operationId: listAllJobs
       tags:
         - Jobs
       responses:
@@ -254,13 +259,13 @@ paths:
   /jobs/{id}:
     parameters:
       - schema:
-          type: integer
+          type: string
         name: id
         in: path
         required: true
     get:
       summary: Get job by ID
-      operationId: getJobById
+      operationId: viewJobWithId
       tags:
         - Jobs
       responses:
@@ -272,7 +277,7 @@ paths:
                 $ref: '#/components/schemas/Job'
     put:
       summary: Update job by ID
-      operationId: updateJobById
+      operationId: modifyJobWithId
       tags:
         - Jobs
       requestBody:
@@ -290,7 +295,7 @@ paths:
                 $ref: '#/components/schemas/Job'
     delete:
       summary: Delete job by ID
-      operationId: deleteJobById
+      operationId: deleteJobWithId
       tags:
         - Jobs
       responses:
@@ -299,15 +304,15 @@ paths:
   /jobs/{id}/job-applications:
     parameters:
       - schema:
-          type: integer
+          type: string
         name: id
         in: path
         required: true
     get:
       summary: Get all job applications for a job
-      operationId: getJobApplications
+      operationId: viewApplicationsForJob
       tags:
-        - Job Applications
+        - Jobs
       responses:
         '200':
           description: List of job applications for the job
@@ -387,9 +392,9 @@ paths:
                         status: COMPLETE
     put:
       summary: Update job application status
-      operationId: updateJobApplicationStatus
+      operationId: modifyJobApplicationWithId
       tags:
-        - Job Applications
+        - Jobs
       requestBody:
         description: Update the status of a job application
         content:
@@ -407,7 +412,7 @@ paths:
       summary: Create a new job application
       operationId: createJobApplication
       tags:
-        - Job Applications
+        - Jobs
       requestBody:
         content:
           application/json:
@@ -426,7 +431,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         email:
           type: string
         password:
@@ -441,9 +446,9 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         creator_user_id:
-          type: integer
+          type: string
         start_time:
           type: string
         end_time:
@@ -467,10 +472,10 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         job_id:
-          type: integer
+          type: string
         user_id:
-          type: integer
+          type: string
         status:
           type: string
