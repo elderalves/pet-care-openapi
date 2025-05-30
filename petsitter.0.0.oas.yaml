@@ -91,6 +91,95 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Job'
+  /users/{id}/job-applications:
+    parameters:
+      - name: id 
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get job applications made by user
+      operationId: getUserJobApplications
+      tags:
+        - Job Applications
+      responses:
+        '200':
+          description: List of job applications made by user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/JobApplication'
+              examples:
+                two-items:
+                  summary: Example with two job applications
+                  value:
+                    items:
+                      - id: 1
+                        job_id: 123
+                        user_id: 345
+                        status: PENDING
+                      - id: 2
+                        job_id: 123
+                        user_id: 456
+                        status: COMPLETE
+                empty:
+                  summary: Example with no job applications
+                  value:
+                    items: []
+                many:
+                  summary: Example with many job applications
+                  value:
+                    items:
+                      - id: 1
+                        job_id: 123
+                        user_id: 345
+                        status: COMPLETE
+                      - id: 2
+                        job_id: 123
+                        user_id: 456
+                        status: PENDING
+                      - id: 3
+                        job_id: 123
+                        user_id: 567
+                        status: PENDING
+                      - id: 4
+                        job_id: 123
+                        user_id: 678
+                        status: PENDING
+                      - id: 5
+                        job_id: 123
+                        user_id: 789
+                        status: COMPLETE
+                      - id: 6
+                        job_id: 123
+                        user_id: 890
+                        status: PENDING
+                      - id: 7
+                        job_id: 123
+                        user_id: 901
+                        status: COMPLETE
+                      - id: 8
+                        job_id: 123
+                        user_id: 234
+                        status: PENDING
+                      - id: 9
+                        job_id: 123
+                        user_id: 345
+                        status: COMPLETE
+                      - id: 10
+                        job_id: 123
+                        user_id: 456
+                        status: PENDING
+                      - id: 11
+                        job_id: 123
+                        user_id: 567
+                        status: COMPLETE
   /jobs:
     post:
       summary: Create a new job
@@ -127,6 +216,41 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Job'
+              examples:
+                with-some-data:
+                  summary: Example with some data
+                  value:
+                    items:
+                      - id: 123
+                        creator_user_id: 345
+                        start_time: 2023-10-01T10:00:00Z
+                        end_time: 2023-10-01T12:00:00Z
+                        activity: walk
+                        dog:
+                          name: Fido
+                          size: medium
+                          breed: Doberman
+                          age: 3
+                      - id: 234
+                        creator_user_id: 456
+                        start_time: 2023-10-02T14:00:00Z
+                        end_time: 2023-10-02T16:00:00Z
+                        activity: feeding
+                        dog:
+                          name: Max
+                          size: small
+                          breed: Beagle
+                          age: 5
+                      - id: 345
+                        creator_user_id: 567
+                        start_time: 2023-10-03T08:00:00Z
+                        end_time: 2023-10-03T10:00:00Z
+                        activity: grooming
+                        dog:
+                          name: Bella
+                          size: large
+                          breed: Labrador
+                          age: 2
   /jobs/{id}:
     parameters:
       - schema:
@@ -196,6 +320,71 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/JobApplication'
+              examples:
+                two-items:
+                  summary: Example with two job applications
+                  value:
+                    items:
+                      - id: 1
+                        job_id: 123
+                        user_id: 345
+                        status: PENDING
+                      - id: 2
+                        job_id: 123
+                        user_id: 456
+                        status: COMPLETE
+                empty:
+                  summary: Example with no job applications
+                  value:
+                    items: []
+                many:
+                  summary: Example with many job applications
+                  value:
+                    items:
+                      - id: 1
+                        job_id: 123
+                        user_id: 345
+                        status: COMPLETE
+                      - id: 2
+                        job_id: 123
+                        user_id: 456
+                        status: PENDING
+                      - id: 3
+                        job_id: 123
+                        user_id: 567
+                        status: PENDING
+                      - id: 4
+                        job_id: 123
+                        user_id: 678
+                        status: PENDING
+                      - id: 5
+                        job_id: 123
+                        user_id: 789
+                        status: COMPLETE
+                      - id: 6
+                        job_id: 123
+                        user_id: 890
+                        status: PENDING
+                      - id: 7
+                        job_id: 123
+                        user_id: 901
+                        status: COMPLETE
+                      - id: 8
+                        job_id: 123
+                        user_id: 234
+                        status: PENDING
+                      - id: 9
+                        job_id: 123
+                        user_id: 345
+                        status: COMPLETE
+                      - id: 10
+                        job_id: 123
+                        user_id: 456
+                        status: PENDING
+                      - id: 11
+                        job_id: 123
+                        user_id: 567
+                        status: COMPLETE
     put:
       summary: Update job application status
       operationId: updateJobApplicationStatus
