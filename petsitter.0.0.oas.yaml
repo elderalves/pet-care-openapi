@@ -164,6 +164,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Job'
+    delete:
+      summary: Delete job by ID
+      operationId: deleteJobById
+      tags:
+        - Jobs
+      responses:
+        '204':
+          description: Job deleted successfully
   /jobs/{id}/job-applications:
     parameters:
       - schema:
