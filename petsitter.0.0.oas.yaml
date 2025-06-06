@@ -7,13 +7,46 @@ tags:
     description: Operations related to users
   - name: Jobs
     description: Operations related to jobs
+servers:
+  - url: /api
+security:
+  - SessionToken: []
 paths:
+  /session:
+    post:
+      summary: Create a new session
+      operationId: startSession
+      security: []
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+          headers:
+            Location:
+              schema:
+                type: string
   /users:
     post:
       summary: Create a new user
       operationId: registerUser
       tags:
         - Users
+      security: []
       requestBody:
         required: true
         content:
@@ -207,6 +240,52 @@ paths:
     get:
       summary: Get all jobs
       operationId: listAllJobs
+      parameters:
+        - name: start_time_before
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter jobs that start before this time
+        - name: start_time_after
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter jobs that start after this time
+        - name: end_time_before
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter jobs that end before this time
+        - name: end_time_after
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter jobs that end after this time
+        - name: activity
+          in: query
+          schema:
+            type: string
+          description: Filter jobs by activity type (e.g., walk, feeding, grooming)
+        - name: pets
+          in: query
+          description: Filter jobs by pet type (e.g., dog, cat)
+          style: deepObject
+          schema:
+            type: object
+            properties:
+              age_below:
+                type: integer
+                description: Filter pets by age below this value
+              age_above:
+                type: integer
+                description: Filter pets by age above this value
+              species:
+                type: string
+                description: Return only pets with this species. Provide multiple species as a comma-separated list (e.g., dog,cat)
       tags:
         - Jobs
       responses:
@@ -426,7 +505,19 @@ paths:
               schema:
                 type: string
 components:
+  securitySchemes:
+    SessionToken:
+      type: apiKey
+      in: header
+      name: Authorization
   schemas:
+    Session:
+      type: object
+      properties:
+        user_id:
+          type: string
+        auth_header:
+          type: string
     User:
       type: object
       properties:
@@ -455,19 +546,50 @@ components:
           type: string
         activity:
           type: string
-        dog:
-          $ref: '#/components/schemas/Dog'
+        pets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pet'
+    Pet:
+      allOf:
+        - type: object
+          properties:
+            name:
+              type: string
+            age:
+              type: string
+        - oneOf:
+            - $ref: '#/components/schemas/Dog'
+            - $ref: '#/components/schemas/Cat'
+          discriminator:
+            propertyName: species
+            mapping:
+              dog: '#/components/schemas/Dog'
+              cat: '#/components/schemas/Cat'
     Dog:
-      type: object
-      properties:
-        name:
-          type: string
-        size:
-          type: integer
-        breed:
-          type: string
-        age:
-          type: integer
+      allOf:
+        - $ref: '#/components/schemas/Pet'
+        - type: object
+          properties:
+            species:
+              type: string
+            size:
+              type: string
+            breed:
+              type: string
+          required:
+            - species
+    Cat:
+      allOf:
+        - $ref: '#/components/schemas/Pet'
+        - type: object
+          properties:
+            species:
+              type: string
+            breed:
+              type: string
+          required:
+            - species
     JobApplication:
       type: object
       properties:
