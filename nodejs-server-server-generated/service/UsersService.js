@@ -4,7 +4,7 @@
 /**
  * Delete user by ID
  *
- * id Integer 
+ * id String 
  * no response value expected for this operation
  **/
 exports.deleteUserWithId = function(id) {
@@ -17,7 +17,7 @@ exports.deleteUserWithId = function(id) {
 /**
  * Get job applications made by user
  *
- * id Integer 
+ * id String 
  * returns inline_response_200_1
  **/
 exports.listJobApplicationsForUser = function(id) {
@@ -25,14 +25,14 @@ exports.listJobApplicationsForUser = function(id) {
     var examples = {};
     examples['application/json'] = {
   "items" : [ {
-    "user_id" : 1,
-    "job_id" : 6,
-    "id" : 0,
+    "user_id" : "user_id",
+    "job_id" : "job_id",
+    "id" : "id",
     "status" : "status"
   }, {
-    "user_id" : 1,
-    "job_id" : 6,
-    "id" : 0,
+    "user_id" : "user_id",
+    "job_id" : "job_id",
+    "id" : "id",
     "status" : "status"
   } ]
 };
@@ -48,7 +48,7 @@ exports.listJobApplicationsForUser = function(id) {
 /**
  * Get jobs created by user
  *
- * id Integer 
+ * id String 
  * returns inline_response_200
  **/
 exports.listJobsForUser = function(id) {
@@ -56,29 +56,19 @@ exports.listJobsForUser = function(id) {
     var examples = {};
     examples['application/json'] = {
   "items" : [ {
-    "creator_user_id" : 6,
+    "creator_user_id" : "creator_user_id",
+    "pets" : [ "", "" ],
     "start_time" : "start_time",
     "activity" : "activity",
     "end_time" : "end_time",
-    "id" : 0,
-    "dog" : {
-      "size" : 1,
-      "name" : "name",
-      "breed" : "breed",
-      "age" : 5
-    }
+    "id" : "id"
   }, {
-    "creator_user_id" : 6,
+    "creator_user_id" : "creator_user_id",
+    "pets" : [ "", "" ],
     "start_time" : "start_time",
     "activity" : "activity",
     "end_time" : "end_time",
-    "id" : 0,
-    "dog" : {
-      "size" : 1,
-      "name" : "name",
-      "breed" : "breed",
-      "age" : 5
-    }
+    "id" : "id"
   } ]
 };
     if (Object.keys(examples).length > 0) {
@@ -94,7 +84,7 @@ exports.listJobsForUser = function(id) {
  * Update user by ID
  *
  * body User 
- * id Integer 
+ * id String 
  * returns User
  **/
 exports.modifyUserWithId = function(body,id) {
@@ -104,7 +94,7 @@ exports.modifyUserWithId = function(body,id) {
   "password" : "password",
   "full_name" : "full_name",
   "roles" : [ "roles", "roles" ],
-  "id" : 0,
+  "id" : "id",
   "email" : "email"
 };
     if (Object.keys(examples).length > 0) {
@@ -130,21 +120,43 @@ exports.registerUser = function(body) {
 
 
 /**
+ * Create a new session
+ *
+ * body Session_body  (optional)
+ * returns Session
+ **/
+exports.startSession = function(body) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "user_id" : "user_id",
+  "auth_header" : "auth_header"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Get user by ID
  *
- * id Integer 
+ * id String 
  * returns User
  **/
 exports.viewUserWithId = function(id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-      "password" : "password",
-      "full_name" : ["full_name"],
-      "roles" : [ "roles", "roles" ],
-      "id" : 0,
-      "email" : "email"
-    };
+  "password" : "password",
+  "full_name" : "full_name",
+  "roles" : [ "roles", "roles" ],
+  "id" : "id",
+  "email" : "email"
+};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {

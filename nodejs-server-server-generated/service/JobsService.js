@@ -18,7 +18,7 @@ exports.createJob = function(body) {
  * Create a new job application
  *
  * body JobApplication  (optional)
- * id Integer 
+ * id String 
  * no response value expected for this operation
  **/
 exports.createJobApplication = function(body,id) {
@@ -31,7 +31,7 @@ exports.createJobApplication = function(body,id) {
 /**
  * Delete job by ID
  *
- * id Integer 
+ * id String 
  * no response value expected for this operation
  **/
 exports.deleteJobWithId = function(id) {
@@ -44,36 +44,34 @@ exports.deleteJobWithId = function(id) {
 /**
  * Get all jobs
  *
+ * start_time_before Date Filter jobs that start before this time (optional)
+ * start_time_after Date Filter jobs that start after this time (optional)
+ * end_time_before Date Filter jobs that end before this time (optional)
+ * end_time_after Date Filter jobs that end after this time (optional)
+ * activity String Filter jobs by activity type (e.g., walk, feeding, grooming) (optional)
+ * pets[age_below] Integer  (optional)
+ * pets[age_above] Integer  (optional)
+ * pets[species] String  (optional)
  * returns inline_response_200
  **/
-exports.listAllJobs = function() {
+exports.listAllJobs = function(start_time_before,start_time_after,end_time_before,end_time_after,activity,pets) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
   "items" : [ {
-    "creator_user_id" : 6,
+    "creator_user_id" : "creator_user_id",
+    "pets" : [ "", "" ],
     "start_time" : "start_time",
     "activity" : "activity",
     "end_time" : "end_time",
-    "id" : 0,
-    "dog" : {
-      "size" : 1,
-      "name" : "name",
-      "breed" : "breed",
-      "age" : 5
-    }
+    "id" : "id"
   }, {
-    "creator_user_id" : 6,
+    "creator_user_id" : "creator_user_id",
+    "pets" : [ "", "" ],
     "start_time" : "start_time",
     "activity" : "activity",
     "end_time" : "end_time",
-    "id" : 0,
-    "dog" : {
-      "size" : 1,
-      "name" : "name",
-      "breed" : "breed",
-      "age" : 5
-    }
+    "id" : "id"
   } ]
 };
     if (Object.keys(examples).length > 0) {
@@ -89,16 +87,16 @@ exports.listAllJobs = function() {
  * Update job application status
  *
  * body JobApplication Update the status of a job application (optional)
- * id Integer 
+ * id String 
  * returns JobApplication
  **/
 exports.modifyJobApplicationWithId = function(body,id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-  "user_id" : 1,
-  "job_id" : 6,
-  "id" : 0,
+  "user_id" : "user_id",
+  "job_id" : "job_id",
+  "id" : "id",
   "status" : "status"
 };
     if (Object.keys(examples).length > 0) {
@@ -114,24 +112,19 @@ exports.modifyJobApplicationWithId = function(body,id) {
  * Update job by ID
  *
  * body Job 
- * id Integer 
+ * id String 
  * returns Job
  **/
 exports.modifyJobWithId = function(body,id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-  "creator_user_id" : 6,
+  "creator_user_id" : "creator_user_id",
+  "pets" : [ "", "" ],
   "start_time" : "start_time",
   "activity" : "activity",
   "end_time" : "end_time",
-  "id" : 0,
-  "dog" : {
-    "size" : 1,
-    "name" : "name",
-    "breed" : "breed",
-    "age" : 5
-  }
+  "id" : "id"
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -145,7 +138,7 @@ exports.modifyJobWithId = function(body,id) {
 /**
  * Get all job applications for a job
  *
- * id Integer 
+ * id String 
  * returns inline_response_200_1
  **/
 exports.viewApplicationsForJob = function(id) {
@@ -153,14 +146,14 @@ exports.viewApplicationsForJob = function(id) {
     var examples = {};
     examples['application/json'] = {
   "items" : [ {
-    "user_id" : 1,
-    "job_id" : 6,
-    "id" : 0,
+    "user_id" : "user_id",
+    "job_id" : "job_id",
+    "id" : "id",
     "status" : "status"
   }, {
-    "user_id" : 1,
-    "job_id" : 6,
-    "id" : 0,
+    "user_id" : "user_id",
+    "job_id" : "job_id",
+    "id" : "id",
     "status" : "status"
   } ]
 };
@@ -176,24 +169,19 @@ exports.viewApplicationsForJob = function(id) {
 /**
  * Get job by ID
  *
- * id Integer 
+ * id String 
  * returns Job
  **/
 exports.viewJobWithId = function(id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-  "creator_user_id" : 6,
+  "creator_user_id" : "creator_user_id",
+  "pets" : [ "", "" ],
   "start_time" : "start_time",
   "activity" : "activity",
   "end_time" : "end_time",
-  "id" : 0,
-  "dog" : {
-    "size" : 1,
-    "name" : "name",
-    "breed" : "breed",
-    "age" : 5
-  }
+  "id" : "id"
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);

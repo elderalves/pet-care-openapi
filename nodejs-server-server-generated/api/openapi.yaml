@@ -3,13 +3,41 @@ info:
   title: Pet Sitter API
   version: "0.1"
 servers:
-- url: /
+- url: /api
+security:
+- SessionToken: []
 tags:
 - name: Users
   description: Operations related to users
 - name: Jobs
   description: Operations related to jobs
 paths:
+  /session:
+    post:
+      tags:
+      - Users
+      summary: Create a new session
+      operationId: startSession
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/session_body"
+      responses:
+        "200":
+          description: Session created successfully
+          headers:
+            Location:
+              style: simple
+              explode: false
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+      security: []
+      x-swagger-router-controller: Users
   /users:
     post:
       tags:
@@ -31,6 +59,7 @@ paths:
               explode: false
               schema:
                 type: string
+      security: []
       x-swagger-router-controller: Users
   /users/{id}:
     get:
@@ -45,7 +74,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       responses:
         "200":
           description: User found
@@ -66,7 +95,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       requestBody:
         content:
           application/json:
@@ -93,7 +122,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       responses:
         "204":
           description: User deleted successfully
@@ -111,7 +140,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       responses:
         "200":
           description: List of jobs created by user
@@ -133,7 +162,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       responses:
         "200":
           description: List of job applications made by user
@@ -213,6 +242,59 @@ paths:
       - Jobs
       summary: Get all jobs
       operationId: listAllJobs
+      parameters:
+      - name: start_time_before
+        in: query
+        description: Filter jobs that start before this time
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      - name: start_time_after
+        in: query
+        description: Filter jobs that start after this time
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      - name: end_time_before
+        in: query
+        description: Filter jobs that end before this time
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      - name: end_time_after
+        in: query
+        description: Filter jobs that end after this time
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      - name: activity
+        in: query
+        description: "Filter jobs by activity type (e.g., walk, feeding, grooming)"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: pets
+        in: query
+        description: "Filter jobs by pet type (e.g., dog, cat)"
+        required: false
+        style: deepObject
+        explode: false
+        schema:
+          $ref: "#/components/schemas/pets"
       responses:
         "200":
           description: List of jobs
@@ -227,8 +309,8 @@ paths:
                     items:
                     - id: 123
                       creator_user_id: 345
-                      start_time: 2023-10-01T10:00:00.000Z
-                      end_time: 2023-10-01T12:00:00.000Z
+                      start_time: 2023-10-01T10:00:00Z
+                      end_time: 2023-10-01T12:00:00Z
                       activity: walk
                       dog:
                         name: Fido
@@ -237,8 +319,8 @@ paths:
                         age: 3
                     - id: 234
                       creator_user_id: 456
-                      start_time: 2023-10-02T14:00:00.000Z
-                      end_time: 2023-10-02T16:00:00.000Z
+                      start_time: 2023-10-02T14:00:00Z
+                      end_time: 2023-10-02T16:00:00Z
                       activity: feeding
                       dog:
                         name: Max
@@ -247,8 +329,8 @@ paths:
                         age: 5
                     - id: 345
                       creator_user_id: 567
-                      start_time: 2023-10-03T08:00:00.000Z
-                      end_time: 2023-10-03T10:00:00.000Z
+                      start_time: 2023-10-03T08:00:00Z
+                      end_time: 2023-10-03T10:00:00Z
                       activity: grooming
                       dog:
                         name: Bella
@@ -290,7 +372,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       responses:
         "200":
           description: Job found
@@ -311,7 +393,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       requestBody:
         content:
           application/json:
@@ -338,7 +420,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       responses:
         "204":
           description: Job deleted successfully
@@ -356,7 +438,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       responses:
         "200":
           description: List of job applications for the job
@@ -442,7 +524,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       requestBody:
         description: Update the status of a job application
         content:
@@ -469,7 +551,7 @@ paths:
         style: simple
         explode: false
         schema:
-          type: integer
+          type: string
       requestBody:
         content:
           application/json:
@@ -487,11 +569,21 @@ paths:
       x-swagger-router-controller: Jobs
 components:
   schemas:
+    Session:
+      type: object
+      properties:
+        user_id:
+          type: string
+        auth_header:
+          type: string
+      example:
+        user_id: user_id
+        auth_header: auth_header
     User:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         email:
           type: string
         password:
@@ -508,66 +600,97 @@ components:
         roles:
         - roles
         - roles
-        id: 0
+        id: id
         email: email
     Job:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         creator_user_id:
-          type: integer
+          type: string
         start_time:
           type: string
         end_time:
           type: string
         activity:
           type: string
-        dog:
-          $ref: "#/components/schemas/Dog"
+        pets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Pet"
       example:
-        creator_user_id: 6
+        creator_user_id: creator_user_id
+        pets:
+        - ""
+        - ""
         start_time: start_time
         activity: activity
         end_time: end_time
-        id: 0
-        dog:
-          size: 1
-          name: name
-          breed: breed
-          age: 5
+        id: id
+    Pet:
+      allOf:
+      - type: object
+        properties:
+          name:
+            type: string
+          age:
+            type: string
+      - discriminator:
+          propertyName: species
+          mapping:
+            dog: "#/components/schemas/Dog"
+            cat: "#/components/schemas/Cat"
+        oneOf:
+        - $ref: "#/components/schemas/Dog"
+        - $ref: "#/components/schemas/Cat"
     Dog:
-      type: object
-      properties:
-        name:
-          type: string
-        size:
-          type: integer
-        breed:
-          type: string
-        age:
-          type: integer
-      example:
-        size: 1
-        name: name
-        breed: breed
-        age: 5
+      allOf:
+      - $ref: "#/components/schemas/Pet"
+      - required:
+        - species
+        type: object
+        properties:
+          species:
+            type: string
+          size:
+            type: string
+          breed:
+            type: string
+    Cat:
+      allOf:
+      - $ref: "#/components/schemas/Pet"
+      - required:
+        - species
+        type: object
+        properties:
+          species:
+            type: string
+          breed:
+            type: string
     JobApplication:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         job_id:
-          type: integer
+          type: string
         user_id:
-          type: integer
+          type: string
         status:
           type: string
       example:
-        user_id: 1
-        job_id: 6
-        id: 0
+        user_id: user_id
+        job_id: job_id
+        id: id
         status: status
+    session_body:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
     inline_response_200:
       type: object
       properties:
@@ -577,26 +700,22 @@ components:
             $ref: "#/components/schemas/Job"
       example:
         items:
-        - creator_user_id: 6
+        - creator_user_id: creator_user_id
+          pets:
+          - ""
+          - ""
           start_time: start_time
           activity: activity
           end_time: end_time
-          id: 0
-          dog:
-            size: 1
-            name: name
-            breed: breed
-            age: 5
-        - creator_user_id: 6
+          id: id
+        - creator_user_id: creator_user_id
+          pets:
+          - ""
+          - ""
           start_time: start_time
           activity: activity
           end_time: end_time
-          id: 0
-          dog:
-            size: 1
-            name: name
-            breed: breed
-            age: 5
+          id: id
     inline_response_200_1:
       type: object
       properties:
@@ -606,11 +725,29 @@ components:
             $ref: "#/components/schemas/JobApplication"
       example:
         items:
-        - user_id: 1
-          job_id: 6
-          id: 0
+        - user_id: user_id
+          job_id: job_id
+          id: id
           status: status
-        - user_id: 1
-          job_id: 6
-          id: 0
+        - user_id: user_id
+          job_id: job_id
+          id: id
           status: status
+    pets:
+      type: object
+      properties:
+        age_below:
+          type: integer
+          description: Filter pets by age below this value
+        age_above:
+          type: integer
+          description: Filter pets by age above this value
+        species:
+          type: string
+          description: "Return only pets with this species. Provide multiple species\
+            \ as a comma-separated list (e.g., dog,cat)"
+  securitySchemes:
+    SessionToken:
+      type: apiKey
+      name: Authorization
+      in: header

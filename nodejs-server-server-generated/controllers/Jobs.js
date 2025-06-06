@@ -33,8 +33,8 @@ module.exports.deleteJobWithId = function deleteJobWithId (req, res, next, id) {
     });
 };
 
-module.exports.listAllJobs = function listAllJobs (req, res, next) {
-  Jobs.listAllJobs()
+module.exports.listAllJobs = function listAllJobs (req, res, next, start_time_before, start_time_after, end_time_before, end_time_after, activity, pets) {
+  Jobs.listAllJobs(start_time_before, start_time_after, end_time_before, end_time_after, activity, pets)
     .then(function (response) {
       utils.writeJson(res, response);
     })

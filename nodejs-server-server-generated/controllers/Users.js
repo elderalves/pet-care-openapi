@@ -53,6 +53,16 @@ module.exports.registerUser = function registerUser (req, res, next, body) {
     });
 };
 
+module.exports.startSession = function startSession (req, res, next, body) {
+  Users.startSession(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.viewUserWithId = function viewUserWithId (req, res, next, id) {
   Users.viewUserWithId(id)
     .then(function (response) {
